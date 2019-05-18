@@ -62,7 +62,7 @@ net stop "sedsvc"
 net stop "WaaSMedicSvc"
 
 @rem Services to start in gaming mode
-@ren net start "Tobii Service"
+@rem net start "Tobii Service"
 
 @rem Activate the High Performance power plan
 powercfg.exe /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
@@ -150,5 +150,5 @@ goto end
 @rem ###########
 :end
 timeout 3
-@rem pause
-exit
+pause
+@rem exit
