@@ -50,7 +50,7 @@ net stop "AdobeUpdateService"
 net stop "AGSService"
 net stop "AGMService"
 net stop "Apple Mobile Device Service"
-net stop "BcastDVRUserService_66bc7"
+net stop "BcastDVRUserService"
 net stop "Cisco AnyConnect Secure Mobility Agent"
 net stop "ICCS"
 net stop "Intel(R) Content Protection HDCP Service"
@@ -60,6 +60,9 @@ net stop "LightingService"
 net stop "Razer Game Scanner Service"
 net stop "sedsvc"
 net stop "WaaSMedicSvc"
+net stop "XblAuthManager" 
+net stop "XblGameSave" 
+net stop "XboxNetApiSvc" 
 
 @rem Services to start in gaming mode
 @rem net start "Tobii Service"
@@ -100,8 +103,7 @@ sc config "asComSvc" start= auto
 sc config "asHmComSvc" start= auto
 sc config "AsSysCtrlService" start= auto
 sc config "AsusFanControlService" start= auto
-@rem BcastDVRUserService returns access denied
-@rem sc config "BcastDVRUserService" start= disabled 
+sc config "BcastDVRUserService" start= disabled 
 sc config "BcmBtRSupport" start= auto
 sc config "Bonjour Service" start= disabled
 sc config "GalaxyClientService" start= disabled
@@ -127,6 +129,9 @@ sc config "Tobii Service" start= demand
 @rem Windows Update Medic Service
 @rem Will probably return "Access Denied". Find a way to disable this.
 @rem sc config "WaaSMedicSvc" start= disabled
+sc config "XblAuthManager" start= disabled
+sc config "XblGameSave" start= disabled
+sc config "XboxNetApiSvc" start= disabled
 sc config "XTU3SERVICE" start= delayed-auto
 
 @rem Disable wake armed devices
@@ -150,5 +155,5 @@ goto end
 @rem ###########
 :end
 timeout 3
-pause
-@rem exit
+@rem pause
+exit
