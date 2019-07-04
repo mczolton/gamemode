@@ -29,10 +29,12 @@ taskkill /F /IM Maps.exe
 taskkill /F /IM MessagingApplication.exe
 taskkill /F /IM Microsoft.Photos.exe
 taskkill /F /IM Music.UI.exe
+taskkill /F /IM PeopleExperienceHost.exe
 taskkill /F /IM SystemSettings.exe
 taskkill /F /IM Video.UI.exe
 taskkill /F /IM WinStore.App.exe
 taskkill /F /IM XboxApp.exe
+taskkill /F /IM YourPhone.exe
 
 @rem Apple Apps
 taskkill /F /IM distnoted.exe
