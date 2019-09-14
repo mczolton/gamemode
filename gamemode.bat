@@ -1,4 +1,24 @@
 @echo off
+
+@rem #####################
+@rem ### Configuration ###
+@rem #####################
+
+@rem Wait before exit
+set config_wait_before_exit=3
+
+@rem Exit when done
+set config_exit_when_done=true
+
+@rem Ignore Xbox features
+set config_ignore_xbox=false
+
+@rem Use Tobii eye tracking
+set config_use_tobii=false
+
+@rem ###############################
+@rem ### Command Line Parameters ###
+@rem ###############################
 if /I "%1" == "" goto usage
 if /I "%1" == "start" goto start
 if /I "%1" == "stop" goto stop
@@ -33,8 +53,13 @@ taskkill /F /IM PeopleExperienceHost.exe
 taskkill /F /IM SystemSettings.exe
 taskkill /F /IM Video.UI.exe
 taskkill /F /IM WinStore.App.exe
-taskkill /F /IM XboxApp.exe
 taskkill /F /IM YourPhone.exe
+
+@rem Xbox Apps
+if not %config_ignore_xbox% == true (
+  taskkill /F /IM XboxApp.exe
+  taskkill /F /IM GameBar.exe
+)
 
 @rem Apple Apps
 taskkill /F /IM distnoted.exe
@@ -52,7 +77,6 @@ net stop "AdobeUpdateService"
 net stop "AGSService"
 net stop "AGMService"
 net stop "Apple Mobile Device Service"
-net stop "BcastDVRUserService"
 net stop "Cisco AnyConnect Secure Mobility Agent"
 net stop "ICCS"
 net stop "Intel(R) Content Protection HDCP Service"
@@ -61,13 +85,20 @@ net stop "iPod Service"
 net stop "LightingService"
 net stop "Razer Game Scanner Service"
 net stop "sedsvc"
-net stop "WaaSMedicSvc"
-net stop "XblAuthManager" 
-net stop "XblGameSave" 
-net stop "XboxNetApiSvc" 
+net stop "WaaSMedicSvc" 
+
+@rem Xbox Services
+if not %config_ignore_xbox% == true (
+  net stop "BcastDVRUserService"
+  net stop "XblAuthManager" 
+  net stop "XblGameSave" 
+  net stop "XboxNetApiSvc"
+)
 
 @rem Services to start in gaming mode
-@rem net start "Tobii Service"
+if %config_use_tobii% == true (
+  net start "Tobii Service"
+)
 
 @rem Activate the High Performance power plan
 powercfg.exe /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
@@ -104,8 +135,7 @@ sc config "Apple Mobile Device Service" start= demand
 sc config "asComSvc" start= auto
 sc config "asHmComSvc" start= auto
 sc config "AsSysCtrlService" start= auto
-sc config "AsusFanControlService" start= auto
-sc config "BcastDVRUserService" start= disabled 
+sc config "AsusFanControlService" start= auto 
 sc config "BcmBtRSupport" start= auto
 sc config "Bonjour Service" start= disabled
 sc config "GalaxyClientService" start= disabled
@@ -131,10 +161,15 @@ sc config "Tobii Service" start= demand
 @rem Windows Update Medic Service
 @rem Will probably return "Access Denied". Find a way to disable this.
 @rem sc config "WaaSMedicSvc" start= disabled
-sc config "XblAuthManager" start= disabled
-sc config "XblGameSave" start= disabled
-sc config "XboxNetApiSvc" start= disabled
 sc config "XTU3SERVICE" start= delayed-auto
+
+@rem Xbox Setup
+if not %config_ignore_xbox% == true (
+  sc config "BcastDVRUserService" start= disabled
+  sc config "XblAuthManager" start= disabled
+  sc config "XblGameSave" start= disabled
+  sc config "XboxNetApiSvc" start= disabled 
+)
 
 @rem Disable wake armed devices
 for /F "tokens=*" %%A in ('powercfg -devicequery wake_armed') do (
@@ -156,6 +191,5 @@ goto end
 @rem ### End ###
 @rem ###########
 :end
-timeout 3
-@rem pause
-exit
+timeout %config_wait_before_exit%
+if %config_exit_when_done% == true ( exit ) else ( pause )
